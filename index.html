@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    
+    <!-- PWA & SEO Meta -->
+    <title>SmartSkip</title>
+    <meta name="description" content="Intelligent attendance tracker with predictive analysis and holiday awareness.">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f393.png">
+
+    <!-- Styles & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'Inter', 'Segoe UI', 'sans-serif'],
+            },
+            colors: {
+              macos: {
+                bg: "#000000",
+                glass: "rgba(30, 30, 35, 0.70)", 
+                border: "rgba(255, 255, 255, 0.10)",
+                active: "#0A84FF",
+              }
+            },
+            boxShadow: {
+              'glass': '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+              'glass-sm': '0 8px 30px rgba(0, 0, 0, 0.3)',
+              'glow': '0 0 20px rgba(255, 255, 255, 0.15)',
+            },
+            animation: {
+              'mac-window-open': 'macWindowOpen 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'mac-scale-in': 'macScaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'mac-genie-open': 'macGenieOpen 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+            },
+            perspective: {
+              '2000': '2000px',
+            },
+            keyframes: {
+              macWindowOpen: {
+                '0%': { opacity: '0', transform: 'scale(0.94) translateY(15px) blur(10px)' },
+                '100%': { opacity: '1', transform: 'scale(1) translateY(0) blur(0)' },
+              },
+              macScaleIn: {
+                '0%': { opacity: '0', transform: 'scale(0.96)' },
+                '100%': { opacity: '1', transform: 'scale(1)' },
+              },
+              macGenieOpen: {
+                '0%': { 
+                  opacity: '0',
+                  transform: 'scale(0.1, 0.05)', 
+                  filter: 'blur(40px) brightness(1.5)' 
+                },
+                '40%': {
+                   opacity: '1'
+                },
+                '100%': { 
+                  opacity: '1', 
+                  transform: 'scale(1, 1)',
+                  filter: 'blur(0px) brightness(1)'
+                },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      html {
+        background-color: #000000;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        background-color: transparent;
+        color: rgba(255, 255, 255, 0.95);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+      }
+      .aurora-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 0;
+        background: #020204;
+        overflow: hidden;
+      }
+      .aurora-layer-1 {
+        position: absolute;
+        width: 140vw;
+        height: 140vw;
+        top: -40%;
+        left: -20%;
+        background: radial-gradient(circle at center, rgba(10, 50, 180, 0.25) 0%, rgba(5, 20, 80, 0.1) 40%, transparent 70%);
+        filter: blur(120px);
+        opacity: 0.8;
+        mix-blend-mode: screen;
+        animation: breathe 10s ease-in-out infinite alternate;
+      }
+      .aurora-layer-2 {
+        position: absolute;
+        width: 100vw;
+        height: 100vw;
+        top: -20%;
+        right: -20%;
+        background: radial-gradient(circle at center, rgba(120, 20, 140, 0.2) 0%, rgba(60, 10, 60, 0.1) 50%, transparent 70%);
+        filter: blur(100px);
+        opacity: 0.6;
+        mix-blend-mode: screen;
+        animation: float 15s ease-in-out infinite alternate;
+      }
+      .aurora-layer-3 {
+        position: absolute;
+        width: 100vw;
+        height: 60vh;
+        bottom: -20%;
+        left: 0;
+        background: radial-gradient(ellipse at center, rgba(30, 100, 255, 0.1) 0%, transparent 70%);
+        filter: blur(80px);
+        opacity: 0.4;
+        mix-blend-mode: screen;
+      }
+      @keyframes breathe {
+        0% { transform: scale(1); opacity: 0.8; }
+        100% { transform: scale(1.05); opacity: 0.6; }
+      }
+      @keyframes float {
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(-20px, 20px); }
+      }
+      .pro-glass {
+        background: rgba(22, 22, 24, 0.65);
+        backdrop-filter: blur(40px) saturate(210%);
+        -webkit-backdrop-filter: blur(40px) saturate(210%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 
+          0 0 0 1px rgba(0, 0, 0, 0.1),
+          0 20px 40px rgba(0,0,0,0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      }
+      .pro-glass::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+        opacity: 0.4;
+        pointer-events: none;
+        mix-blend-mode: overlay;
+        z-index: 0;
+        border-radius: inherit;
+      }
+      .scrollbar-hide::-webkit-scrollbar { display: none; }
+      .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div class="aurora-bg">
+      <div class="aurora-layer-1"></div>
+      <div class="aurora-layer-2"></div>
+      <div class="aurora-layer-3"></div>
+    </div>
+    <div id="root" style="position: relative; z-index: 1;"></div>
+    
+    <noscript>
+      <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#000;color:#fff;font-family:sans-serif;text-align:center;">
+        <div>
+          <h1>SmartSkip</h1>
+          <p>This application requires JavaScript to run.</p>
+        </div>
+      </div>
+    </noscript>
+
+    <!-- Pointing to src/index.tsx for Vite -->
+    <script type="module" src="/src/index.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
